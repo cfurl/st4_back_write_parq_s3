@@ -1,0 +1,39 @@
+services:
+  
+  scraper:
+    image: cfurl/st4_back_scrape24:v1
+    container_name: scrape24
+    networks:
+      - some_name
+    volumes:
+      - st4_data:/home/data
+
+  wgrib2:
+    image: sondngyn/wgrib2:latest
+    container_name: wgrib2
+    command: "wgrib2_commands.sh"
+    depends_on:
+      scraper:
+        condition: service_completed_successfully
+    volumes: 
+      - st4_data:/srv/
+      - st4_data:/opt/    
+      
+  parqs3:
+    image: cfurl/st4_back_write_parq_s3:v1
+    container_name: parqs3
+    depends_on:
+      wgrib2:
+        condition: service_completed_successfully
+    networks:
+      - some_name
+    volumes:
+      - st4_data:/home/data
+
+networks:
+  some_name:
+    external:
+        name: st4_net
+        
+volumes:
+  st4_data:
