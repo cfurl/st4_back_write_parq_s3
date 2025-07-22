@@ -20,7 +20,7 @@ services:
       - st4_data:/opt/    
       
   parqs3:
-    image: cfurl/st4_back_write_parq_s3:v1
+    image: cfurl/st4_back_write_parq_s3:v2
     container_name: parqs3
     depends_on:
       wgrib2:

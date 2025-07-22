@@ -7,7 +7,7 @@ library("readr")
 library("stringr")
 
 # make sure you can connect to your bucket and open SubTreeFileSystem
-bucket <- s3_bucket("stg4-eaa")
+bucket <- s3_bucket("stg4-texas-24hr")
 
 # list everything in your bucket in a recursive manner
 bucket$ls(recursive = TRUE)
@@ -23,7 +23,7 @@ raw_grib2_text = list.files("/home/data", pattern = "^st4_conus.*.txt$",full.nam
 for (h in raw_grib2_text) {
   name <- h |>
     str_replace("st4_conus.", "t") |>
-    str_replace(".01h.txt","")
+    str_replace(".24h.txt","")
   
   aa<-read_csv(paste0("/home/data/",h), col_names=FALSE) %>%
   #aa<-read_csv(h, col_names=FALSE) %>%
@@ -39,7 +39,7 @@ for (h in raw_grib2_text) {
 }  
 
 bb|>
-  group_by(year,month) |>
+  group_by(year,month,day) |>
   write_dataset(path = s3_path,
                 format = "parquet")
 
